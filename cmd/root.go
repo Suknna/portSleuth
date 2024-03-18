@@ -22,6 +22,10 @@ THE SOFTWARE.
 package cmd
 
 import (
+<<<<<<< HEAD
+=======
+	"fmt"
+>>>>>>> master
 	"os"
 
 	"github.com/spf13/cobra"
@@ -35,6 +39,13 @@ var rootCmd = &cobra.Command{
 	// Uncomment the following line if your bare application
 	// has an action associated with it:
 	// Run: func(cmd *cobra.Command, args []string) { },
+<<<<<<< HEAD
+=======
+	Run: func(cmd *cobra.Command, args []string) {
+		ev, _ := cmd.Flags().GetString("echo")
+		fmt.Println(ev)
+	},
+>>>>>>> master
 }
 
 // Execute adds all child commands to the root command and sets flags appropriately.
@@ -48,4 +59,9 @@ func Execute() {
 
 func init() {
 	rootCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
+<<<<<<< HEAD
+=======
+	rootCmd.Flags().StringP("ip", "i", "127.0.0.1", "Enter  Ipv4 address. Like 192.168.1.2 , 192.168.1.2-192.168.1.222 , 192.168.1.3;192.168.3.2;192.168.4.5")
+	rootCmd.Flags().StringP("port", "p", "", "Enter port. Like ")
+>>>>>>> master
 }
