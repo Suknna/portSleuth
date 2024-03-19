@@ -1,6 +1,4 @@
 package udp
-<<<<<<< HEAD
-=======
 
 import (
 	"fmt"
@@ -23,4 +21,3 @@ func UdpCheck(ip net.IP, port string, td time.Duration) {
 		defer conn.Close()
 	}
 }
->>>>>>> master

@@ -6,8 +6,23 @@ import (
 	"strings"
 )
 
+// scatteredIpToSlices 函数用于将不连续ip转换为切片
+func scatteredIpToSlices(ips string) (netIpSlice []net.IP) {
+	ipSlice := strings.Split(ips, ";")
+	for _, v := range ipSlice {
+		netIpSlice = append(netIpSlice, net.ParseIP(v))
+	}
+	return netIpSlice
+}
+
+// scatteredPortToSlices 函数用于将不连续端口转换为切片
+func scatteredPortToSlices(ps string) (portSlice []string) {
+	portSlice = strings.Split(ps, ";")
+	return portSlice
+}
+
 // PortGeneration 函数用于生成指定端口范围内的所有端口号
-func PortGeneration(portDan string) []string {
+func PortGeneration(portDan string) (ports []string) {
 	ok := strings.Contains(portDan, "-")
 	if !ok {
 		//fmt.Println("If using a port range, please write it in the following way: a-b")
@@ -20,7 +35,6 @@ func PortGeneration(portDan string) []string {
 		//fmt.Println("Please confirm if your starting port is smaller than the ending port")
 		panic("Invalid Port range. Please confirm if your starting port is smaller than the ending port")
 	}
-	var ports []string
 	for i := startP; i <= endP; i++ {
 		ports = append(ports, strconv.Itoa(i))
 	}
@@ -28,7 +42,7 @@ func PortGeneration(portDan string) []string {
 }
 
 // IpGeneration 函数用于生成指定IP范围内的所有IP地址
-func IpGeneration(ipDan string) []net.IP {
+func IpGeneration(ipDan string) (ips []net.IP) {
 	ok := strings.Contains(ipDan, "-")
 	if !ok {
 		panic("If using a port range, please write it in the following way: a-b")
@@ -49,8 +63,6 @@ func IpGeneration(ipDan string) []net.IP {
 	if ipAtoI(startIP) >= ipAtoI(endIP) {
 		panic("Invalid IP range. Please confirm if your starting port is smaller than the ending port")
 	}
-
-	var ips []net.IP
 
 	// 生成ip
 	for {
