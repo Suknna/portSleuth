@@ -37,17 +37,14 @@ var rootCmd = &cobra.Command{
 	// Run: func(cmd *cobra.Command, args []string) { },
 	Run: func(cmd *cobra.Command, args []string) {
 		ipStr, _ := cmd.Flags().GetString("ip")
-		if ipStr != "" {
-			ipInit(ipStr)
-		} else {
-			panic("Enter at least one IP address")
-		}
 		pStr, _ := cmd.Flags().GetString("port")
-		if pStr != "" {
-			portInit(pStr)
+		pl, _ := cmd.Flags().GetString("protocol")
+		if ipStr != "" && pStr != "" {
+			portSleuthRun(ipStr, pStr, pl)
 		} else {
-			panic("Enter at least one port")
+			panic("Enter at least one IP address and port")
 		}
+
 	},
 }
 
@@ -64,12 +61,10 @@ func init() {
 	rootCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 	rootCmd.Flags().StringP("ip", "i", "127.0.0.1", "Enter  Ipv4 address. Like 192.168.1.2 , 192.168.1.2-192.168.1.222 , 192.168.1.3;192.168.3.2;192.168.4.5")
 	rootCmd.Flags().StringP("port", "p", "", "Enter port. Like 80 , 80-8080 , 80;22;39;60")
+	rootCmd.Flags().StringP("protocol", "pl", "", "Enter protocol. Like tcp , udp")
 }
 
-func ipInit(ipStr string) {
-	// 进行参数解析前检测传入参数是否合规
-}
-
-func portInit(pStr string) {
-	// 进行参数解析前检测传入参数是否合规
+func portSleuthRun(ipStr string, portStr string, pl string) {
+	// 判断传入的参数类型，根据类型选择对应的配置解析方式
+	// 单独ip
 }

@@ -1,4 +1,4 @@
-package udp
+package pkg
 
 import (
 	"fmt"
@@ -6,12 +6,14 @@ import (
 	"time"
 )
 
-// udp函数用于检测指定的IP地址和端口是否开放。
+// tcp函数用于检测指定的IP地址和端口是否开放。
 // 参数：
 //
 //	ip: 要检测的IP地址
 //	port: 要检测的端口号
-func UdpCheck(ip net.IP, port string, td time.Duration) {
+//	td: 超时时间
+//	pl: 传入的协议TCP或者UDP
+func Check(ip net.IP, port string, td time.Duration, pl string) {
 	str := net.JoinHostPort(ip.String(), port)
 	conn, err := net.DialTimeout("tcp", str, td)
 	if err != nil {
