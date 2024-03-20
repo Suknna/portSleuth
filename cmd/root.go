@@ -23,6 +23,8 @@ package cmd
 
 import (
 	"os"
+	"portsleuth/cfg"
+	"portsleuth/pkg"
 
 	"github.com/spf13/cobra"
 )
@@ -39,12 +41,12 @@ var rootCmd = &cobra.Command{
 		ipStr, _ := cmd.Flags().GetString("ip")
 		pStr, _ := cmd.Flags().GetString("port")
 		pl, _ := cmd.Flags().GetString("protocol")
+		td, _ := cmd.Flags().GetString("timeout")
 		if ipStr != "" && pStr != "" {
-			portSleuthRun(ipStr, pStr, pl)
+			portSleuthRun(ipStr, pStr, pl, td)
 		} else {
 			panic("Enter at least one IP address and port")
 		}
-
 	},
 }
 
@@ -59,12 +61,20 @@ func Execute() {
 
 func init() {
 	rootCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
-	rootCmd.Flags().StringP("ip", "i", "127.0.0.1", "Enter  Ipv4 address. Like 192.168.1.2 , 192.168.1.2-192.168.1.222 , 192.168.1.3;192.168.3.2;192.168.4.5")
-	rootCmd.Flags().StringP("port", "p", "", "Enter port. Like 80 , 80-8080 , 80;22;39;60")
-	rootCmd.Flags().StringP("protocol", "pl", "", "Enter protocol. Like tcp , udp")
+	rootCmd.Flags().StringP("ip", "i", "", "Enter  Ipv4 address. Like: {192.168.1.2|192.168.1.2-192.168.1.222|192.168.1.3,192.168.3.2,192.168.4.5}")
+	rootCmd.Flags().StringP("port", "p", "", "Enter port. Like: {80|80-8080|80,22,39,60}")
+	rootCmd.Flags().StringP("protocol", "P", "tcp", "Enter protocol. Like: {tcp|udp}")
+	rootCmd.Flags().StringP("timeout", "s", "3", "Enter the timeout in seconds.")
 }
 
-func portSleuthRun(ipStr string, portStr string, pl string) {
-	// 判断传入的参数类型，根据类型选择对应的配置解析方式
-	// 单独ip
+func portSleuthRun(ipStr string, pStr string, plStr string, to string) {
+	ipSlice := cfg.ParseIP(ipStr)
+	portSlice := cfg.ParsePort(pStr)
+	pl := cfg.ParseProtocol(plStr)
+	td := cfg.ParseTime(to)
+	for _, ip := range ipSlice {
+		for _, p := range portSlice {
+			pkg.Check(ip, p, td, pl)
+		}
+	}
 }
