@@ -1,1 +1,23 @@
-g
+Portsleuth 使用说明
+Port detection: 用户可以使用此命令检测当前主机的对端主机是否启用了端口。
+
+使用方法
+        
+bash
+复制代码运行
+portsleuth [flags]
+portsleuth [command]
+
+    
+可用命令
+completion：为指定的 shell 生成自动补全脚本
+help：关于任何命令的帮助
+version：版本信息
+标志
+-h, --help：显示 portsleuth 的帮助信息
+-i, --ip string：输入 IPv4 地址，例如：{192.168.1.2|192.168.1.2-192.168.1.222|192.168.1.3,192.168.3.2,192.168.4.5}
+-p, --port string：输入端口，例如：{80|80-8080|80,22,39,60}
+-P, --protocol string：输入协议，例如：{tcp|udp}（默认为 "tcp"）
+-s, --timeout string：输入超时时间（以秒为单位），（默认为 "3"）
+-t, --toggle：切换帮助信息
+使用 "portsleuth [command] --help" 获取有关命令的更多信息。
