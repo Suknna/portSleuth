@@ -17,9 +17,9 @@ func Check(ip string, port string, td time.Duration, pl string) {
 	str := net.JoinHostPort(ip, port)
 	conn, err := net.DialTimeout(pl, str, td)
 	if err != nil {
-		fmt.Printf("protocol: %s , ip: %s , port: %s is closed\n", pl, ip, port)
+		fmt.Printf("[%s] %s is closed\n", pl, str)
 	} else {
-		fmt.Printf("ip: %s , port: %s is opened\n", ip, port)
+		fmt.Printf("[%s] %s is openeded\n", pl, str)
 		defer conn.Close()
 	}
 }

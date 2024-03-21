@@ -33,7 +33,7 @@ import (
 var rootCmd = &cobra.Command{
 	Use:   "portsleuth",
 	Short: "Port detection tool",
-	Long:  `Port detection: Users can use this command to detect whether the opposite host has a port enabled on the current host.`,
+	Long:  `Detect the port connection between the current host and the target host.`,
 	// Uncomment the following line if your bare application
 	// has an action associated with it:
 	// Run: func(cmd *cobra.Command, args []string) { },
