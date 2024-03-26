@@ -33,9 +33,9 @@ var versionCmd = &cobra.Command{
 	Short: "version.",
 	Long:  `Display version and current author information.`,
 	Run: func(cmd *cobra.Command, args []string) {
-		info := `version: 1.0
+		info := `version: 2.0
 author: Suknna/huanqiWang
-author's email: suknna@foxmail.com`
+email: suknna@foxmail.com`
 		fmt.Println(info)
 	},
 }

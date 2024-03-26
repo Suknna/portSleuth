@@ -22,9 +22,12 @@ THE SOFTWARE.
 package cmd
 
 import (
+	"fmt"
 	"os"
 	"portsleuth/cfg"
 	"portsleuth/pkg"
+	"sync"
+	"time"
 
 	"github.com/spf13/cobra"
 )
@@ -40,15 +43,17 @@ var rootCmd = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 		ipStr, _ := cmd.Flags().GetString("ip")
 		pStr, _ := cmd.Flags().GetString("port")
-		pl, _ := cmd.Flags().GetString("protocol")
 		td, _ := cmd.Flags().GetString("timeout")
+		goNum, _ := cmd.Flags().GetInt("goroutine")
 		if ipStr != "" && pStr != "" {
-			portSleuthRun(ipStr, pStr, pl, td)
+			portSleuthRun(ipStr, pStr, td, goNum)
 		} else {
-			panic("Enter at least one IP address and port")
+			panic("Enter at least one port and IPv4 address.")
 		}
 	},
 }
+
+var wg sync.WaitGroup
 
 // Execute adds all child commands to the root command and sets flags appropriately.
 // This is called by main.main(). It only needs to happen once to the rootCmd.
@@ -63,18 +68,38 @@ func init() {
 	rootCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 	rootCmd.Flags().StringP("ip", "i", "", "Enter  Ipv4 address. Like: {192.168.1.2|192.168.1.2-192.168.1.222|192.168.1.3,192.168.3.2,192.168.4.5}")
 	rootCmd.Flags().StringP("port", "p", "", "Enter port. Like: {80|80-8080|80,22,39,60}")
-	rootCmd.Flags().StringP("protocol", "P", "tcp", "Enter protocol. Like: {tcp|udp}")
-	rootCmd.Flags().StringP("timeout", "s", "3", "Enter the timeout in seconds.")
+	rootCmd.Flags().StringP("timeout", "s", "0.2", "Enter the timeout in seconds.")
+	rootCmd.Flags().IntP("goroutine", "g", 10, "Enter the number of goroutines.")
 }
 
-func portSleuthRun(ipStr string, pStr string, plStr string, to string) {
+// portSleuthRun 函数用于并发地检查给定的 IP 地址和端口号，以确定它们是否可用。
+// 参数：
+//
+//	ipStr: 一个包含多个 IP 地址的字符串
+//	pStr: 一个包含多个端口号的字符串
+//	to: 超时时间，格式为 "1s"、"2m"、"3h" 等。
+//	goNum: 同时运行的最大协程数。
+//	fmtS: 日志格式化字符串
+func portSleuthRun(ipStr string, pStr string, to string, goNum int) {
 	ipSlice := cfg.ParseIP(ipStr)
 	portSlice := cfg.ParsePort(pStr)
-	pl := cfg.ParseProtocol(plStr)
 	td := cfg.ParseTime(to)
+	ch := make(chan struct{}, goNum)
 	for _, ip := range ipSlice {
-		for _, p := range portSlice {
-			pkg.Check(ip, p, td, pl)
-		}
+		wg.Add(1)
+		ch <- struct{}{}
+		go func(ip string, ps []string, td time.Duration) {
+			defer wg.Done()
+			op, cp := pkg.Check(ip, ps, td)
+			fmt.Printf(`
+Ipv4 %s :
+    opened:
+		%s
+    closed:
+		%s`, ip, op, cp)
+			<-ch
+		}(ip, portSlice, td)
+
 	}
+	wg.Wait()
 }

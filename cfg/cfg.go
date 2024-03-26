@@ -9,6 +9,21 @@ import (
 	"time"
 )
 
+var AddrObj struct {
+	ip        string
+	openPort  []string
+	closePort []string
+}
+
+func ParseFmtString(fmtS string) string {
+	fs := strings.ToLower(fmtS)
+	if fs != "closed" && fs != "opened" {
+		fmt.Println("Invalid format string.")
+		os.Exit(1)
+	}
+	return fs
+}
+
 // parseIP 解析传入的ip
 func ParseIP(ipStr string) []string {
 	if isIpv4(ipStr) {
@@ -104,7 +119,7 @@ func portGeneration(portDan string) (ports []string) {
 	for i := startP; i <= endP; i++ {
 		ok := isPort(strconv.Itoa(i))
 		if !ok {
-			fmt.Printf("Invalid Port. port: %s\n", i)
+			fmt.Printf("Invalid Port. port: %d\n", i)
 		}
 		ports = append(ports, strconv.Itoa(i))
 	}
@@ -141,7 +156,7 @@ func ipGeneration(ipDan string) (ips []string) {
 		ips = append(ips, startIP.String())
 		nextIP := incrementIP(startIP)
 		if nextIP.Equal(endIP) {
-			ips = append(ips, startIP.String())
+			ips = append(ips, endIP.String())
 			break
 		}
 		startIP = nextIP
